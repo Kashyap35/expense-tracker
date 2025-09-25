@@ -88,6 +88,38 @@ def plot_category_expenses():
     except FileNotFoundError:
         print("No expenses recorded yet.")
 
+# Function to delete an expense by row number
+def delete_expense():
+    try:
+        df = pd.read_csv(CSV_FILE)
+        if df.empty:
+            print("No expenses to delete.")
+            return
+
+        print("\n--- All Expenses ---")
+        print(df)
+        row_num = int(input("Enter the row number to delete (starting from 0): "))
+
+        if 0 <= row_num < len(df):
+            df = df.drop(row_num)
+            df.to_csv(CSV_FILE, index=False)
+            print("Expense deleted successfully!")
+        else:
+            print("Invalid row number.")
+    except FileNotFoundError:
+        print("No expenses recorded yet.")
+
+
+# Function to clear all expenses
+def clear_all_expenses():
+    confirm = input("Are you sure you want to delete ALL expenses? (yes/no): ")
+    if confirm.lower() == 'yes':
+        with open(CSV_FILE, 'w') as f:
+            f.write("Date,Category,Amount,Description\n")  # keep headers
+        print("All expenses have been deleted.")
+    else:
+        print("Operation cancelled.")
+
 
 
 # Main menu
@@ -100,7 +132,9 @@ def main():
         print("4. Category Summary")
         print("5. Plot Monthly Expenses")
         print("6. Plot Category Expenses")
-        print("7. Exit")
+        print("7. Delete an Expense")
+        print("8. Clear All Expenses")
+        print("9. Exit")
         choice = input("Choose an option: ")
 
         if choice == '1':
@@ -116,6 +150,10 @@ def main():
         elif choice == '6':
             plot_category_expenses()
         elif choice == '7':
+            delete_expense()
+        elif choice == '8':
+            clear_all_expenses()
+        elif choice == '9':
             print("Goodbye!")
             break
         else:
